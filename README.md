@@ -37,7 +37,7 @@ This project demonstrates a simple Stripe Checkout integration using React.js an
 ## Installation
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/spriyanerisala/stripe_payment_n8n/tree/main
 cd client
 npm install
 npm run dev
