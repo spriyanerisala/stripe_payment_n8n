@@ -1,0 +1,187 @@
+{
+  "name": "Stripe_payment",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.stripe.com/v1/checkout/sessions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "your secret key"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "mode",
+              "value": "payment"
+            },
+            {
+              "name": "success_url",
+              "value": "http://localhost:5173/success"
+            },
+            {
+              "name": "cancel_url",
+              "value": "http://localhost:5173/cancel"
+            },
+            {
+              "name": "line_items[0][price_data][currency]",
+              "value": "inr"
+            },
+            {
+              "name": "line_items[0][price_data][product_data][name]",
+              "value": "={{ $json.Product }}"
+            },
+            {
+              "name": "line_items[0][quantity]",
+              "value": "1"
+            },
+            {
+              "name": "line_items[0][price_data][unit_amount]",
+              "value": "={{ Number($json.Price * 100)}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        448,
+        -32
+      ],
+      "id": "1e4efb42-ca8a-4a4f-b132-ac72ea972fea",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f463bdc4-6e29-4ac7-b070-10c4a06b3321",
+              "name": "Product",
+              "value": "=Dress {{ $json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "e9cd4096-c7b5-410b-a407-c5bee936ccd0",
+              "name": "Price",
+              "value": "={{ $json.body.price }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        -32
+      ],
+      "id": "75965aea-0391-43c4-ad74-6ff295158c6f",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fd76a833-e168-4626-bd1c-391d612939a6",
+              "name": "checkoutUrl",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        -32
+      ],
+      "id": "879cfeb1-18fc-4bbf-831c-be221442473d",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "buy-now",
+        "responseMode": "lastNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        -32
+      ],
+      "id": "82adf12f-31cd-4bff-9713-8f4ca3af2ffe",
+      "name": "Webhook",
+      "webhookId": "79757857-0b46-4baf-b2a1-22860ad23b18"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "ea18c49c-ffd8-48c9-b3f8-57151746835f",
+  "meta": {
+    "instanceId": "9ac091fd0bede83b15d97738b109bc63f5fe16fe291b12c1a1dba11c46d0d10f"
+  },
+  "nodeGroups": [],
+  "id": "yKzeFgnm2452lYHc",
+  "tags": []
+}
